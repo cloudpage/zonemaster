@@ -17,11 +17,14 @@ This document covers two stages in the release processes:
 1. Creating Docker images for testing.
 2. Creating Docker image for publishing on Docker Hub
 
-Presently only Zonemaster-CLI is published, and therefore only Zonemaster-LDNS,
-Zonemaster-Engine and Zonemaster-CLI are covered here.
+Presently Zonemaster-CLI, Zonemaster-Backend and Zonemaster-All-In-One are published. Creating images
+for Zonemaster-LDNS, Zonemaster-Engine, Zonemaster-CLI, Zonemaster-Backend and Zonemaster-All-in-One
+is covered here.
 
 
 ## 2. Prerequisite
+
+### Environment
 
 The steps in this documents are assumed to be executed on a computer installed
 as an [Ubuntu Build Environment] computer. It could work on another OS as long
@@ -40,15 +43,37 @@ commands to clean up before proceeding (see section "[Handy Docker commands]"):
 [ "$(docker image ls -q)" != '' ] && docker image prune -a
 ```
 
+### Enable IPv6 support
+
+Docker has no IPv6 support by default. On Linux it can be enabled. Do that unless
+already done, or else zonemaster-cli will report errors when trying to access
+servers on IPv6.
+
+Create or update `/etc/docker/daemon.json`. This is a minimal file that enables
+IPv6 support:
+
+```json
+{
+    "ipv6": true,
+    "fixed-cidr-v6": "2001:db8:1::/64"
+}
+```
+
+Restart the docker daemon:
+```sh
+sudo systemctl restart docker
+```
 
 ## 3. Create Docker images
 
-### Clone the three repositories
+### Clone the repositories
 
 ```sh
 git clone https://github.com/zonemaster/zonemaster-ldns
 git clone https://github.com/zonemaster/zonemaster-engine
 git clone https://github.com/zonemaster/zonemaster-cli
+git clone https://github.com/zonemaster/zonemaster-backend
+git clone https://github.com/zonemaster/zonemaster-gui
 ```
 
 ### Check out right branch depending on the use case
@@ -59,6 +84,8 @@ git clone https://github.com/zonemaster/zonemaster-cli
 git -C zonemaster-ldns checkout origin/develop
 git -C zonemaster-engine checkout origin/develop
 git -C zonemaster-cli checkout origin/develop
+git -C zonemaster-backend checkout origin/develop
+git -C zonemaster-gui checkout origin/develop
 ```
 
 * Check out `master` branch when creating an image for Docker Hub at release, or
@@ -68,18 +95,26 @@ when creating an image based on release version:
 git -C zonemaster-ldns checkout origin/master
 git -C zonemaster-engine checkout origin/master
 git -C zonemaster-cli checkout origin/master
+git -C zonemaster-backend checkout origin/master
+git -C zonemaster-gui checkout origin/master
 ```
 
-### Make sure repositories are clean and create `Makefile` in all three repositories
+### Make sure repositories are clean and create `Makefile` in all repositories
 
 ```sh
-(cd zonemaster-ldns; git submodule update; git clean -dfx; git reset --hard; perl Makefile.PL)
+(cd zonemaster-ldns; git submodule deinit -f ldns; git clean -dfx; git reset --hard; perl Makefile.PL)
 ```
 ```sh
 (cd zonemaster-engine; git clean -dfx; git reset --hard; perl Makefile.PL)
 ```
 ```sh
 (cd zonemaster-cli; git clean -dfx; git reset --hard; perl Makefile.PL)
+```
+```sh
+(cd zonemaster-backend; git clean -dfx; git reset --hard; perl Makefile.PL)
+```
+```sh
+(cd zonemaster-gui; git clean -dfx; git reset --hard)
 ```
 
 ### Create images
@@ -96,6 +131,17 @@ make -C zonemaster-engine all dist docker-build
 ```sh
 make -C zonemaster-cli all dist docker-build
 ```
+```sh
+make -C zonemaster-backend all dist docker-build
+```
+
+Node.js version 24 is required to build the GUI. If you are using `nvm` you can set it with `nvm install 24`.
+If you get building errors, repeat the `nvm` commands in [build environment for Node.js] first.
+
+```sh
+(cd zonemaster-gui; npm install && npm run release && make docker-build)
+```
+
 
 ### Determine version of Zonemaster-CLI image
 
@@ -116,7 +162,7 @@ Docker Hub. There are three valid possibilities:
    set the tags of the image with the simple steps below ignoring "dash
    versions".
 
-*Example: version on Docker Hub is v6.0.0 of v6.0.0-1, local version is v6.0.1,
+*Example: version on Docker Hub is v6.0.0 or v6.0.0-1, local version is v6.0.1,
 new image will have version v6.0.1.*
 
 2. The version on Docker Hub has the same version as the local version. Set the
@@ -134,6 +180,13 @@ will have version v6.0.1-1.*
 *Example: version on Docker Hub is v6.0.1-1, local version is v6.0.1, new image
 will have version v6.0.1-2.*
 
+### Determine version of Zonemaster-Backend image
+
+The version of Zonemaster-Backend follows the same rules as Zonemaster-CLI.
+
+### Determine version of Zonemaster-All-In-One image
+
+The version of Zonemaster-All-In-One follows the same rules as Zonemaster-CLI.
 
 ### Tag the Zonemaster-CLI image
 
@@ -166,6 +219,83 @@ further use. List images:
 docker images
 ```
 
+
+### Tag the Zonemaster-Backend image
+
+For the Zonemaster-Backend image, add a version tag and a tag "latest". Note that
+from source the version tag of Backend is without "v". We add "v" here to the
+Docker image to have consistent versioning at Docker Hub.
+
+* Add version tag:
+```sh
+make -C zonemaster-backend docker-tag-version
+```
+
+* Add tag "latest":
+```sh
+make -C zonemaster-backend docker-tag-latest
+```
+
+* If "dash version" is to be used, set tag with that version and remove tag with
+plain version where "v0.0.0" should be the local version and "v0.0.0-N" should be
+the "dash version" determined above:
+```
+cd zonemaster-backend
+docker tag zonemaster/backend:local zonemaster/backend:v0.0.0-N
+docker rmi zonemaster/backend:0.0.0
+cd ..
+```
+
+* If "dash  version" was not created, change the version number to include "v":
+
+```
+cd zonemaster-backend
+docker tag zonemaster/backend:local zonemaster/backend:v0.0.0
+docker rmi zonemaster/backend:0.0.0
+cd ..
+```
+
+All the created images can now be listed. Also consider doing [sanity checks] to
+verify that all images work. Images without tag are temporary images without
+further use. List images:
+
+```sh
+docker images
+```
+
+### Tag the Zonemaster-All-In-One image
+
+For the Zonemaster-All-In-One image, add a version tag and a tag "latest".
+
+* Add version tag:
+```sh
+make -C zonemaster-gui docker-tag-version
+```
+
+* Add tag "latest":
+```sh
+make -C zonemaster-gui docker-tag-latest
+```
+
+* If "dash version" is to be used, set tag with that version and remove tag with
+plain version where "v0.0.0" should be the local version and "v0.0.0-N" should be
+the "dash version" determined above:
+```
+cd zonemaster-gui
+docker tag zonemaster/all-in-one:local zonemaster/all-in-one:v0.0.0-N
+docker rmi zonemaster/all-in-one:0.0.0
+cd ..
+```
+
+
+All the created images can now be listed. Also consider doing [sanity checks] to
+verify that all images work. Images without tag are temporary images without
+further use. To list images:
+
+```sh
+docker images
+```
+
 ## 4. Upload images to Docker Hub
 
 To upload an image to the Zonemaster Docker Hub organization you have to have
@@ -181,32 +311,86 @@ above that they have the same ID.
 * Push latest.
 ```sh
 docker push zonemaster/cli:latest
+docker push zonemaster/backend:latest
+docker push zonemaster/all-in-one:latest
 ```
 
 * Set correct version (see listing above) and push image with version tag. If
   "dash version" is used, use "v0.0.0-N" set to correct version instead.
 ```sh
 docker push zonemaster/cli:v0.0.0
+docker push zonemaster/backend:v0.0.0
+docker push zonemaster/all-in-one:v0.0.0
 ```
 
 ## 5. Image sanity checks
 
-Zonemaster-LDNS:
+### Zonemaster-LDNS:
 
 ```sh
 docker run --rm zonemaster/ldns:local perl -MZonemaster::LDNS -E 'say Zonemaster::LDNS->new("9.9.9.9")->query("zonemaster.net")->string'
 ```
 
-Zonemaster-Engine:
+### Zonemaster-Engine:
 
 ```sh
 docker run --rm zonemaster/engine:local perl -MZonemaster::Engine -E 'say join "\n", Zonemaster::Engine->test_module("BASIC", "zonemaster.net")'
 ```
 
-Zonemaster-CLI:
+### Zonemaster-CLI:
 
 ```sh
 docker run --rm zonemaster/cli:local zonemaster.net
+```
+
+### Zonemaster-Backend:
+
+Start the backend in the background:
+
+```sh
+docker run --rm -p 5000:5000 --name zm -d zonemaster/backend:local full
+```
+
+Run `docker ps -a`. The container named `zm` should be running.
+
+Run a test through the backend:
+```sh
+docker run -ti --rm --net host zonemaster/backend:local zmtest zonemaster.net
+```
+
+The output should be a JSON object containing, among other things,
+a list of message tags in JSON format.
+
+Test the correct operation of the `zmb` tool by running a test:
+```sh
+docker run -ti --rm --net host zonemaster/backend:local zmb start_domain_test --domain zonemaster.net
+docker run -ti --rm --net host zonemaster/backend:local zmb get_test_results --test-id be98f37d3b137ce0 --lang en
+```
+
+The output should be a JSON object, similar to the previous one.
+
+Finally, stop the backend:
+```sh
+docker stop zm
+```
+
+And run `docker ps -a` to ensure that the backend is no longer running.
+
+### Zonemaster-All-In-One
+
+Start the GUI in the background:
+
+```
+docker run --rm -d --name zm-aio -p 8080:80 zonemaster/all-in-one:local gui
+```
+
+Run `docker ps -a`. The container named `zm-aio` should be running.
+
+Check if the GUI is accessible from your browser at `http://localhost:8080/` and run a test.
+
+Finally, stop the GUI:
+```sh
+docker stop zm-aio
 ```
 
 ## 6. Handy Docker commands
@@ -256,3 +440,4 @@ docker load -i docker-zonemaster-cli.tar
 [Ubuntu Build Environment]:               ../distrib-testing/Ubuntu-build-environment.md
 [Sanity checks]:                          #5-image-sanity-checks
 [Handy Docker commands]:                  #6-handy-docker-commands
+[Build environment for Node.js]:          ../distrib-testing/Ubuntu-Node.js-build-environment.md

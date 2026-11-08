@@ -100,7 +100,7 @@ Test Case specifications:
 |Test Plan/Test Case |Test Case Description|
 |:-------------------|:--------------------|
 |**Address-TP**| |
-|[ADDRESS01](Address-TP/address01.md)|Name server address must be globally routable|
+|[ADDRESS01](Address-TP/address01.md)|Name server address must be globally reachable|
 |[ADDRESS02](Address-TP/address02.md)|Reverse DNS entry exists for name server IP address|
 |[ADDRESS03](Address-TP/address03.md)|Reverse DNS entry matches name server name|
 |**Basic-TP**| |
@@ -117,7 +117,7 @@ Test Case specifications:
 |[CONSISTENCY02](Consistency-TP/consistency02.md)|SOA RNAME consistency|
 |[CONSISTENCY03](Consistency-TP/consistency03.md)|SOA timers consistency|
 |[CONSISTENCY04](Consistency-TP/consistency04.md)|Name server NS consistency|
-|[CONSISTENCY05](Consistency-TP/consistency05.md)|Consistency between glue and authoritative data|
+|[CONSISTENCY05](Consistency-TP/consistency05.md)|Consistency between delegation and zone data|
 |[CONSISTENCY06](Consistency-TP/consistency06.md)|SOA MNAME consistency|
 |**DNSSEC-TP**| |
 |[DNSSEC01](DNSSEC-TP/dnssec01.md)|Legal values for the DS hash digest algorithm|
@@ -126,7 +126,7 @@ Test Case specifications:
 |[DNSSEC04](DNSSEC-TP/dnssec04.md)|Check for too short or too long RRSIG lifetimes|
 |[DNSSEC05](DNSSEC-TP/dnssec05.md)|Check for invalid DNSKEY algorithms|
 |[DNSSEC06](DNSSEC-TP/dnssec06.md)|Verify DNSSEC additional processing|
-|[DNSSEC07](DNSSEC-TP/dnssec07.md)|If DNSKEY at child, parent should have DS|
+|[DNSSEC07](DNSSEC-TP/dnssec07.md)|DNSSEC signed zone and DS in parent for signed zone|
 |[DNSSEC08](DNSSEC-TP/dnssec08.md)|Valid RRSIG for DNSKEY|
 |[DNSSEC09](DNSSEC-TP/dnssec09.md)|RRSIG(SOA) must be valid and created by a valid DNSKEY|
 |[DNSSEC10](DNSSEC-TP/dnssec10.md)|Zone contains NSEC or NSEC3 records|

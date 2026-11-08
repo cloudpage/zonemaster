@@ -128,6 +128,21 @@ Follow the same pattern as in use by adding the address without prefix, e.g. as
 | 127.11.3.0/24   | Address03 scenarios                                         |
 | 127.11.3.21     | ns1.address03.xa                                            |
 | 127.11.3.22     | ns2.address03.xa                                            |
+| 127.11.3.31     | ns1.child.address03.xa                                      |
+| 127.11.3.32     | ns2.child.address03.xa                                      |
+| 127.11.3.33     | ns3.child.address03.xa                                      |
+| 127.11.3.34     | ns4.child.address03.xa                                      |
+| 127.11.3.35     | ns5.child.address03.xa                                      |
+| 127.11.3.36     | ns6.child.address03.xa                                      |
+| 127.11.3.37     | ns7.child.address03.xa                                      |
+| 127.11.3.38     | ns8.child.address03.xa                                      |
+| 127.11.3.39     | ns9.child.address03.xa                                      |
+| 127.11.3.40     | ns10.child.address03.xa                                     |
+| 127.11.3.41     | ns11.child.address03.xa                                     |
+| 127.11.3.42     | ns12.child.address03.xa                                     |
+| 127.11.3.43     | ns13.child.address03.xa                                     |
+| 127.11.3.44     | ns14.child.address03.xa                                     |
+| 127.11.3.45     | ns15.child.address03.xa                                     |
 | 127.11.4.0/24   | (not in use)                                                |
 | (...)           |                                                             |
 | 127.11.255.0/24 | (not in use)                                                |
@@ -156,6 +171,15 @@ Follow the same pattern as in use by adding the address without prefix, e.g. as
 | 127.12.2.0/24   | Basic02 scenarios                                           |
 | 127.12.2.21     | ns1.basic02.xa                                              |
 | 127.12.2.22     | ns2.basic02.xa                                              |
+| 127.12.2.23     | root-ns1.xa                                                 |
+| 127.12.2.24     | root-ns1.xa                                                 |
+| 127.12.2.25     | ns1.basic02.xb                                              |
+| 127.12.2.26     | ns2.basic02.xb                                              |
+| 127.12.2.31     | ns1 child zone                                              |
+| 127.12.2.32     | ns2 child zone                                              |
+| 127.12.2.33     | ns3 child zone                                              |
+| 127.12.2.34     | ns4 child zone                                              |
+| 127.12.2.53     | resolver with test case local hint                          |
 | 127.12.3.0/24   | Basic03 scenarios                                           |
 | 127.12.3.21     | ns1.basic03.xa                                              |
 | 127.12.3.22     | ns2.basic03.xa                                              |
@@ -230,115 +254,150 @@ Follow the same pattern as in use by adding the address without prefix, e.g. as
 
 ### Consistency test level address plan
 
-| Address (range) | Used for -- range for test case or specific NS address      |
-|-----------------|-------------------------------------------------------------|
-| 127.14.0.0/24   | (not in use)                                                |
-| 127.14.1.0/24   | Consistency01 scenarios                                    |
-| 127.14.1.21     | ns1.consistency01.xa                                       |
-| 127.14.1.22     | ns2.consistency01.xa                                       |
-| 127.14.2.0/24   | Consistency02 scenarios                                    |
-| 127.14.2.21     | ns1.consistency02.xa                                       |
-| 127.14.2.22     | ns2.consistency02.xa                                       |
-| 127.14.3.0/24   | Consistency03 scenarios                                    |
-| 127.14.3.21     | ns1.consistency03.xa                                       |
-| 127.14.3.22     | ns2.consistency03.xa                                       |
-| 127.14.4.0/24   | Consistency04 scenarios                                    |
-| 127.14.4.21     | ns1.consistency04.xa                                       |
-| 127.14.4.22     | ns2.consistency05.xa                                       |
-| 127.14.5.0/24   | Consistency05 scenarios                                    |
-| 127.14.5.21     | ns1.consistency05.xa                                       |
-| 127.14.5.22     | ns2.consistency05.xa                                       |
-| 127.14.5.23     | ns1.consistency05.xb                                       |
-| 127.14.5.24     | ns2.consistency05.xb                                       |
-| 127.14.5.31     | for scenarios                                              |
-| 127.14.5.32     | for scenarios                                              |
-| 127.14.5.33     | for scenarios                                              |
-| 127.14.5.34     | for scenarios                                              |
-| 127.14.5.35     | for scenarios                                              |
-| 127.14.6.0/24   | Consistency06 scenarios                                    |
-| 127.14.6.21     | ns1.consistency06.xa                                       |
-| 127.14.6.22     | ns2.consistency06.xa                                       |
-| 127.14.6.23     | ns1.consistency06.xb                                       |
-| 127.14.6.24     | ns2.consistency06.xb                                       |
-| 127.14.6.31     | for scenarios                                              |
-| 127.14.6.32     | for scenarios                                              |
-| 127.14.6.33     | for scenarios                                              |
-| 127.14.6.34     | for scenarios                                              |
-| 127.14.7.0/24   | (not in use)                                                |
-| (...)           |                                                             |
-| 127.14.255.0/24 | (not in use)                                                |
+| Address (range) | Used for -- range for test case or specific NS address    |
+|-----------------|-----------------------------------------------------------|
+| 127.14.0.0/24   | (not in use)                                              |
+| 127.14.1.0/24   | Consistency01 scenarios                                   |
+| 127.14.1.21     | ns1.consistency01.xa                                      |
+| 127.14.1.22     | ns2.consistency01.xa                                      |
+| 127.14.2.0/24   | Consistency02 scenarios                                   |
+| 127.14.2.21     | ns1.consistency02.xa                                      |
+| 127.14.2.22     | ns2.consistency02.xa                                      |
+| 127.14.3.0/24   | Consistency03 scenarios                                   |
+| 127.14.3.21     | ns1.consistency03.xa                                      |
+| 127.14.3.22     | ns2.consistency03.xa                                      |
+| 127.14.4.0/24   | Consistency04 scenarios                                   |
+| 127.14.4.21     | ns1.consistency04.xa                                      |
+| 127.14.4.22     | ns2.consistency05.xa                                      |
+| 127.14.5.0/24   | Consistency05 scenarios                                   |
+| 127.14.5.21     | ns1.consistency05.xa                                      |
+| 127.14.5.22     | ns2.consistency05.xa                                      |
+| 127.14.5.23     | ns1.consistency05.xb                                      |
+| 127.14.5.24     | ns2.consistency05.xb                                      |
+| 127.14.5.31     | for scenarios                                             |
+| 127.14.5.32     | for scenarios                                             |
+| 127.14.5.33     | for scenarios                                             |
+| 127.14.5.34     | for scenarios                                             |
+| 127.14.5.35     | for scenarios                                             |
+| 127.14.5.39     | for scenarios                                             |
+| 127.14.5.41     | for child under parent                                    |
+| 127.14.5.42     | for child under parent                                    |
+| 127.14.5.43     | for child under parent                                    |
+| 127.14.5.53     | resolver with test case local hint file                   |
+| 127.14.5.61     | test case default root ns1                                |
+| 127.14.5.62     | test case default root ns2                                |
+| 127.14.5.63     | test case broken root ns1 (BROKEN-ROOT)                   |
+| 127.14.5.64     | test case broken root ns2 (BROKEN-ROOT)                   |
+| 127.14.5.65     | test case root ns2 (ROOT-MISSING-GLUE-UNDEL-1)            |
+| 127.14.5.66     | test case root ns2 (ROOT-MISSING-GLUE-UNDEL-1)            |
+| 127.14.5.89     | dedicated for addresses-match-8.consistency05.xa (parent) |
+| 127.14.6.0/24   | Consistency06 scenarios                                   |
+| 127.14.6.21     | ns1.consistency06.xa                                      |
+| 127.14.6.22     | ns2.consistency06.xa                                      |
+| 127.14.6.23     | ns1.consistency06.xb                                      |
+| 127.14.6.24     | ns2.consistency06.xb                                      |
+| 127.14.6.31     | for scenarios                                             |
+| 127.14.6.32     | for scenarios                                             |
+| 127.14.6.33     | for scenarios                                             |
+| 127.14.6.34     | for scenarios                                             |
+| 127.14.7.0/24   | (not in use)                                              |
+| (...)           |                                                           |
+| 127.14.255.0/24 | (not in use)                                              |
 
 
 ### DNSSEC test level address plan
 
-| Address (range) | Used for -- range for test case or specific NS address      |
-|-----------------|-------------------------------------------------------------|
-| 127.15.0.0/24   | (not in use)                                                |
-| 127.15.1.0/24   | DNSSEC01 scenarios                                          |
-| 127.15.1.21     | ns1.dnssec01.xa                                             |
-| 127.15.1.22     | ns2.dnssec01.xa                                             |
-| 127.15.2.0/24   | DNSSEC02 scenarios                                          |
-| 127.15.2.21     | ns1.dnssec02.xa                                             |
-| 127.15.2.22     | ns2.dnssec02.xa                                             |
-| 127.15.3.0/24   | DNSSEC03 scenarios                                          |
-| 127.15.3.21     | ns1.dnssec03.xa                                             |
-| 127.15.3.22     | ns2.dnssec03.xa                                             |
-| 127.15.3.31     | n1 server for various scenarios under dnssec03.xa           |
-| 127.15.3.32     | n2 server for various scenarios under dnssec03.xa           |
-| 127.15.4.0/24   | DNSSEC04 scenarios                                          |
-| 127.15.4.21     | ns1.dnssec04.xa                                             |
-| 127.15.4.22     | ns2.dnssec04.xa                                             |
-| 127.15.5.0/24   | DNSSEC05 scenarios                                          |
-| 127.15.5.21     | ns1.dnssec05.xa                                             |
-| 127.15.5.22     | ns2.dnssec05.xa                                             |
-| 127.15.6.0/24   | DNSSEC06 scenarios                                          |
-| 127.15.6.21     | ns1.dnssec06.xa                                             |
-| 127.15.6.22     | ns2.dnssec06.xa                                             |
-| 127.15.7.0/24   | DNSSEC07 scenarios                                          |
-| 127.15.7.21     | ns1.dnssec07.xa                                             |
-| 127.15.7.22     | ns2.dnssec07.xa                                             |
-| 127.15.8.0/24   | DNSSEC08 scenarios                                          |
-| 127.15.8.21     | ns1.dnssec08.xa                                             |
-| 127.15.8.22     | ns2.dnssec08.xa                                             |
-| 127.15.9.0/24   | DNSSEC09 scenarios                                          |
-| 127.15.9.21     | ns1.dnssec09.xa                                             |
-| 127.15.9.22     | ns2.dnssec09.xa                                             |
-| 127.15.10.0/24  | DNSSEC10 scenarios                                          |
-| 127.15.10.21    | ns1.dnssec10.xa                                             |
-| 127.15.10.22    | ns2.dnssec10.xa                                             |
-| 127.15.10.31    | ns1 server for various scenarios for DNSSEC10               |
-| 127.15.10.32    | ns2 server for various scenarios for DNSSEC10               |
-| 127.15.10.37    | For Bind server to create DNSKEY, NSEC3 and RRSIG           |
-| 127.15.10.38    | For Bind server to create DNSKEY, NSEC3 and RRSIG           |
-| 127.15.11.0/24  | DNSSEC11 scenarios                                          |
-| 127.15.11.21    | ns1.dnssec11.xa                                             |
-| 127.15.11.22    | ns2.dnssec11.xa                                             |
-| 127.15.12.0/24  | DNSSEC12 scenarios                                          |
-| 127.15.12.21    | ns1.dnssec12.xa                                             |
-| 127.15.12.22    | ns2.dnssec12.xa                                             |
-| 127.15.13.0/24  | DNSSEC13 scenarios                                          |
-| 127.15.13.21    | ns1.dnssec13.xa                                             |
-| 127.15.13.22    | ns2.dnssec13.xa                                             |
-| 127.15.14.0/24  | DNSSEC14 scenarios                                          |
-| 127.15.14.21    | ns1.dnssec14.xa                                             |
-| 127.15.14.22    | ns2.dnssec14.xa                                             |
-| 127.15.15.0/24  | DNSSEC15 scenarios                                          |
-| 127.15.15.21    | ns1.dnssec15.xa                                             |
-| 127.15.15.22    | ns2.dnssec15.xa                                             |
-| 127.15.16.0/24  | DNSSEC16 scenarios                                          |
-| 127.15.16.21    | ns1.dnssec16.xa                                             |
-| 127.15.16.22    | ns2.dnssec16.xa                                             |
-| 127.15.16.31    | n1 server for various scenarios under dnssec16.xa           |
-| 127.15.16.32    | n2 server for various scenarios under dnssec16.xa           |
-| 127.15.17.0/24  | DNSSEC17 scenarios                                          |
-| 127.15.17.21    | ns1.dnssec17.xa                                             |
-| 127.15.17.22    | ns2.dnssec17.xa                                             |
-| 127.15.18.0/24  | DNSSEC18 scenarios                                          |
-| 127.15.18.21    | ns1.dnssec18.xa                                             |
-| 127.15.18.22    | ns2.dnssec18.xa                                             |
-| 127.15.19.0/24  | (not in use)                                                |
-| (...)           |                                                             |
-| 127.15.255.0/24 | (not in use)                                                |
+| Address (range) | Used for -- range for test case or specific NS address |
+|-----------------|--------------------------------------------------------|
+| 127.15.0.0/24   | (not in use)                                           |
+| 127.15.1.0/24   | DNSSEC01 scenarios                                     |
+| 127.15.1.21     | ns1.dnssec01.xa                                        |
+| 127.15.1.22     | ns2.dnssec01.xa                                        |
+| 127.15.1.27     | ns1 for DNSSEC01 specific root                         |
+| 127.15.1.28     | ns2 for DNSSEC01 specific root                         |
+| 127.15.1.31     | scenario specific parent (if any)                      |
+| 127.15.1.32     | scenario specific parent (if any)                      |
+| 127.15.1.41     | ns1 for scenario child                                 |
+| 127.15.1.42     | ns2 for chenario child                                 |
+| 127.15.1.53     | scenario specific resolver                             |
+| 127.15.2.0/24   | DNSSEC02 scenarios                                     |
+| 127.15.2.21     | ns1.dnssec02.xa                                        |
+| 127.15.2.22     | ns2.dnssec02.xa                                        |
+| 127.15.3.0/24   | DNSSEC03 scenarios                                     |
+| 127.15.3.21     | ns1.dnssec03.xa                                        |
+| 127.15.3.22     | ns2.dnssec03.xa                                        |
+| 127.15.3.31     | n1 server for various scenarios under dnssec03.xa      |
+| 127.15.3.32     | n2 server for various scenarios under dnssec03.xa      |
+| 127.15.4.0/24   | DNSSEC04 scenarios                                     |
+| 127.15.4.21     | ns1.dnssec04.xa                                        |
+| 127.15.4.22     | ns2.dnssec04.xa                                        |
+| 127.15.5.0/24   | DNSSEC05 scenarios                                     |
+| 127.15.5.21     | ns1.dnssec05.xa                                        |
+| 127.15.5.22     | ns2.dnssec05.xa                                        |
+| 127.15.5.23     | OOB n1 server for scenarios                            |
+| 127.15.5.24     | OOB n2 server for scenarios                            |
+| 127.15.5.27     | root-ns1.xa                                            |
+| 127.15.5.28     | root-ns1.xa                                            |
+| 127.15.5.31     | IB n1 server for scenarios                             |
+| 127.15.5.32     | IB n2 server for scenarios                             |
+| 127.15.6.0/24   | DNSSEC06 scenarios                                     |
+| 127.15.6.21     | ns1.dnssec06.xa                                        |
+| 127.15.6.22     | ns2.dnssec06.xa                                        |
+| 127.15.7.0/24   | DNSSEC07 scenarios                                     |
+| 127.15.7.21     | ns1.dnssec07.xa                                        |
+| 127.15.7.22     | ns2.dnssec07.xa                                        |
+| 127.15.7.27     | ns1 of root                                            |
+| 127.15.7.28     | ns2 of root                                            |
+| 127.15.7.31     | ns1 of parent in some scenarios                        |
+| 127.15.7.32     | ns2 of parent in some scenarios                        |
+| 127.15.7.41     | ns1 of child zone                                      |
+| 127.15.7.42     | ns2 of child zone                                      |
+| 127.15.7.53     | resolver with test case local hint                     |
+| 127.15.8.0/24   | DNSSEC08 scenarios                                     |
+| 127.15.8.21     | ns1.dnssec08.xa                                        |
+| 127.15.8.22     | ns2.dnssec08.xa                                        |
+| 127.15.9.0/24   | DNSSEC09 scenarios                                     |
+| 127.15.9.21     | ns1.dnssec09.xa                                        |
+| 127.15.9.22     | ns2.dnssec09.xa                                        |
+| 127.15.10.0/24  | DNSSEC10 scenarios                                     |
+| 127.15.10.21    | ns1.dnssec10.xa                                        |
+| 127.15.10.22    | ns2.dnssec10.xa                                        |
+| 127.15.10.31    | ns1 server for various scenarios for DNSSEC10          |
+| 127.15.10.32    | ns2 server for various scenarios for DNSSEC10          |
+| 127.15.10.33    | ns3 server for various scenarios for DNSSEC10          |
+| 127.15.10.34    | ns4 server for various scenarios for DNSSEC10          |
+| 127.15.10.35    | ns5 server for various scenarios for DNSSEC10          |
+| 127.15.10.37    | For Bind server to create DNSKEY, NSEC3 and RRSIG      |
+| 127.15.10.38    | For Bind server to create DNSKEY, NSEC3 and RRSIG      |
+| 127.15.11.0/24  | DNSSEC11 scenarios                                     |
+| 127.15.11.21    | ns1.dnssec11.xa                                        |
+| 127.15.11.22    | ns2.dnssec11.xa                                        |
+| 127.15.12.0/24  | DNSSEC12 scenarios                                     |
+| 127.15.12.21    | ns1.dnssec12.xa                                        |
+| 127.15.12.22    | ns2.dnssec12.xa                                        |
+| 127.15.13.0/24  | DNSSEC13 scenarios                                     |
+| 127.15.13.21    | ns1.dnssec13.xa                                        |
+| 127.15.13.22    | ns2.dnssec13.xa                                        |
+| 127.15.14.0/24  | DNSSEC14 scenarios                                     |
+| 127.15.14.21    | ns1.dnssec14.xa                                        |
+| 127.15.14.22    | ns2.dnssec14.xa                                        |
+| 127.15.15.0/24  | DNSSEC15 scenarios                                     |
+| 127.15.15.21    | ns1.dnssec15.xa                                        |
+| 127.15.15.22    | ns2.dnssec15.xa                                        |
+| 127.15.16.0/24  | DNSSEC16 scenarios                                     |
+| 127.15.16.21    | ns1.dnssec16.xa                                        |
+| 127.15.16.22    | ns2.dnssec16.xa                                        |
+| 127.15.16.31    | n1 server for various scenarios under dnssec16.xa      |
+| 127.15.16.32    | n2 server for various scenarios under dnssec16.xa      |
+| 127.15.17.0/24  | DNSSEC17 scenarios                                     |
+| 127.15.17.21    | ns1.dnssec17.xa                                        |
+| 127.15.17.22    | ns2.dnssec17.xa                                        |
+| 127.15.18.0/24  | DNSSEC18 scenarios                                     |
+| 127.15.18.21    | ns1.dnssec18.xa                                        |
+| 127.15.18.22    | ns2.dnssec18.xa                                        |
+| 127.15.19.0/24  | (not in use)                                           |
+| (...)           |                                                        |
+| 127.15.255.0/24 | (not in use)                                           |
 
 ### Delegation test level address plan
 
@@ -500,49 +559,66 @@ Follow the same pattern as in use by adding the address without prefix, e.g. as
 
 ### Zone test level address plan
 
-| Address (range) | Used for -- range for test case or specific NS address      |
-|-----------------|-------------------------------------------------------------|
-| 127.19.0.0/24   | (not in use)                                                |
-| 127.19.1.0/24   | Zone01 scenarios                                            |
-| 127.19.1.21     | ns1.zone01.xa                                               |
-| 127.19.1.22     | ns2.zone01.xa                                               |
-| 127.19.2.0/24   | Zone02 scenarios                                            |
-| 127.19.2.21     | ns1.zone02.xa                                               |
-| 127.19.2.22     | ns2.zone02.xa                                               |
-| 127.19.3.0/24   | Zone03 scenarios                                            |
-| 127.19.3.21     | ns1.zone03.xa                                               |
-| 127.19.3.22     | ns2.zone03.xa                                               |
-| 127.19.4.0/24   | Zone04 scenarios                                            |
-| 127.19.4.21     | ns1.zone04.xa                                               |
-| 127.19.4.22     | ns2.zone04.xa                                               |
-| 127.19.5.0/24   | Zone05 scenarios                                            |
-| 127.19.5.21     | ns1.zone05.xa                                               |
-| 127.19.5.22     | ns2.zone05.xa                                               |
-| 127.19.6.0/24   | Zone06 scenarios                                            |
-| 127.19.6.21     | ns1.zone06.xa                                               |
-| 127.19.6.22     | ns2.zone06.xa                                               |
-| 127.19.7.0/24   | Zone07 scenarios                                            |
-| 127.19.7.21     | ns1.zone07.xa                                               |
-| 127.19.7.22     | ns2.zone07.xa                                               |
-| 127.19.8.0/24   | Zone08 scenarios                                            |
-| 127.19.8.21     | ns1.zone08.xa                                               |
-| 127.19.8.22     | ns2.zone08.xa                                               |
-| 127.19.9.0/24   | Zone09 scenarios                                            |
-| 127.19.9.21     | ns1.zone09.xa                                               |
-| 127.19.9.22     | ns2.zone09.xa                                               |
-| 127.19.9.31     | for scenarios                                               |
-| 127.19.9.32     | for scenarios                                               |
-| 127.19.9.34     | testzone NS that answers without authoritative answer       |
-| 127.19.9.41     | ns1.tld-email-domain-zone09.                                |
-| 127.19.9.42     | for scenarios                                               |
-| 127.19.9.43     | ns2.tld-email-domain-zone09.                                |
-| 127.19.9.44     | for scenarios                                               |
-| 127.19.10.0/24  | Zone10 scenarios                                            |
-| 127.19.10.21    | ns1.zone10.xa                                               |
-| 127.19.10.22    | ns2.zone10.xa                                               |
-| 127.19.11.0/24  | (not in use)                                                |
-| (...)           |                                                             |
-| 127.19.255.0/24 | (not in use)                                                |
+| Address (range) | Used for -- range for test case or specific NS address |
+|-----------------|--------------------------------------------------------|
+| 127.19.0.0/24   | (not in use)                                           |
+| 127.19.1.0/24   | Zone01 scenarios                                       |
+| 127.19.1.21     | ns1.zone01.xa                                          |
+| 127.19.1.22     | ns2.zone01.xa                                          |
+| 127.19.2.0/24   | Zone02 scenarios                                       |
+| 127.19.2.21     | ns1.zone02.xa                                          |
+| 127.19.2.22     | ns2.zone02.xa                                          |
+| 127.19.3.0/24   | Zone03 scenarios                                       |
+| 127.19.3.21     | ns1.zone03.xa                                          |
+| 127.19.3.22     | ns2.zone03.xa                                          |
+| 127.19.4.0/24   | Zone04 scenarios                                       |
+| 127.19.4.21     | ns1.zone04.xa                                          |
+| 127.19.4.22     | ns2.zone04.xa                                          |
+| 127.19.5.0/24   | Zone05 scenarios                                       |
+| 127.19.5.21     | ns1.zone05.xa                                          |
+| 127.19.5.22     | ns2.zone05.xa                                          |
+| 127.19.6.0/24   | Zone06 scenarios                                       |
+| 127.19.6.21     | ns1.zone06.xa                                          |
+| 127.19.6.22     | ns2.zone06.xa                                          |
+| 127.19.7.0/24   | Zone07 scenarios                                       |
+| 127.19.7.21     | ns1.zone07.xa                                          |
+| 127.19.7.22     | ns2.zone07.xa                                          |
+| 127.19.8.0/24   | Zone08 scenarios                                       |
+| 127.19.8.21     | ns1.zone08.xa                                          |
+| 127.19.8.22     | ns2.zone08.xa                                          |
+| 127.19.9.0/24   | Zone09 scenarios                                       |
+| 127.19.9.21     | ns1.zone09.xa                                          |
+| 127.19.9.22     | ns2.zone09.xa                                          |
+| 127.19.9.31     | for scenarios                                          |
+| 127.19.9.32     | for scenarios                                          |
+| 127.19.9.34     | testzone NS that answers without authoritative answer  |
+| 127.19.9.41     | ns1 scenario specific TLD                              |
+| 127.19.9.42     | ns2 scenario specific TLD                              |
+| 127.19.9.53     | resolver with test case local hint file                |
+| 127.19.9.61     | ns1 general Zone09 root                                |
+| 127.19.9.62     | ns2 general Zone09 root                                |
+| 127.19.9.63     | ns1 root with MX                                       |
+| 127.19.9.64     | ns2 root with MX                                       |
+| 127.19.9.65     | ns1 root with Null MX                                  |
+| 127.19.9.66     | ns1 root with Null MX                                  |
+| 127.19.10.0/24  | Zone10 scenarios                                       |
+| 127.19.10.21    | ns1.zone10.xa                                          |
+| 127.19.10.22    | ns2.zone10.xa                                          |
+| 127.19.11.0/24  | Zone11 scenarios                                       |
+| 127.19.11.21    | ns1.zone11.xa                                          |
+| 127.19.11.22    | ns2.zone11.xa                                          |
+| 127.19.11.31    | ns1.child.zone11.xa                                    |
+| 127.19.11.32    | ns2.child.zone11.xa                                    |
+| 127.19.11.33    | ns3.child.zone11.xa                                    |
+| 127.19.11.41    | ns1.no-spf.root-servers.zone11.xa                      |
+| 127.19.11.42    | ns2.no-spf.root-servers.zone11.xa                      |
+| 127.19.11.43    | ns1.null-spf.root-servers.zone11.xa                    |
+| 127.19.11.44    | ns2.null-spf.root-servers.zone11.xa                    |
+| 127.19.11.45    | ns1.non-null-spf.root-servers.zone11.xa                |
+| 127.19.11.46    | ns2.non-null-spf.root-servers.zone11.xa                |
+| 127.19.12.0/24  | (not in use)                                           |
+| (...)           |                                                        |
+| 127.19.255.0/24 | (not in use)                                           |
 
 
 ### Engine non-test case address plan
@@ -557,6 +633,15 @@ Follow the same pattern as in use by adding the address without prefix, e.g. as
 | 127.30.1.32     | ns1.sub2.cname.recursor.engine.xa                           |
 | 127.30.1.33     | ns1.sub3.cname.recursor.engine.xa                           |
 | 127.30.1.34     | ns1.goodsub.cname.recursor.engine.xa                        |
+| 127.30.1.35     | ns1.sub4.cname.recursor.engine.xa                           |
+| 127.30.1.36     | ns1.sub5.cname.recursor.engine.xa                           |
+| 127.30.1.37     | ns1.sub6.cname.recursor.engine.xa                           |
+| 127.30.1.38     | ns1.sub7.cname.recursor.engine.xa                           |
+| 127.30.1.39     | ns1.sub8.cname.recursor.engine.xa                           |
+| 127.30.1.40     | ns1.sub9.cname.recursor.engine.xa                           |
+| 127.30.1.41     | ns1.sub10.cname.recursor.engine.xa                          |
+| 127.30.1.42     | ns1.sub11.cname.recursor.engine.xa                          |
+| 127.30.1.43     | ns1.sub12.cname.recursor.engine.xa                          |
 | 127.30.2.0/24   | (not in use)                                                |
 | (...)           |                                                             |
 | 127.30.255.0/24 | (not in use)                                                |

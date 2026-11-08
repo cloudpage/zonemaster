@@ -50,12 +50,18 @@ Zonemaster::CLI, see the [declaration of prerequisites].
    sudo dnf install --assumeyes perl-JSON-XS perl-Try-Tiny perl-Test-Deep perl-Mojolicious
    ```
 
+   > Note: Test::Deep and Mojolicious are indirect dependencies. They are dependencies
+   > of JSON::Validator.
+
+   > Note: **For Rocky Linux 10 only**, it is required to install a patch version of one of JSON::Validator
+   > dependency (Net::IDN::Encode) so that it can build properly:
+   > ```sh
+   > sudo cpanm https://cpan.metacpan.org/authors/id/E/ET/ETHER/Net-IDN-Encode-2.501-TRIAL.tar.gz
+   > ```
+
    ```sh
    sudo cpanm --notest JSON::Validator
    ```
-
-> Note: Test::Deep and Mojolicious are indirect dependencies. They are dependencies
-> of JSON::Validator.
 
 2) Install Zonemaster::CLI
 
@@ -82,7 +88,7 @@ Using pre-built packages is the preferred method for Debian and Ubuntu.
 3) Update configuration of "locale"
 
    ```sh
-   sudo perl -pi -e 's/^# (da_DK\.UTF-8.*|en_US\.UTF-8.*|es_ES\.UTF-8.*|fi_FI\.UTF-8.*|fr_FR\.UTF-8.*|nb_NO\.UTF-8.*|sv_SE\.UTF-8.*)/$1/' /etc/locale.gen
+   sudo perl -pi -e 's/^# (da_DK\.UTF-8.*|en_US\.UTF-8.*|es_ES\.UTF-8.*|fi_FI\.UTF-8.*|fr_FR\.UTF-8.*|nb_NO\.UTF-8.*|sl_SI\.UTF-8.*|sv_SE\.UTF-8.*)/$1/' /etc/locale.gen
    sudo locale-gen
    ```
 
@@ -94,6 +100,7 @@ Using pre-built packages is the preferred method for Debian and Ubuntu.
    fi_FI.utf8
    fr_FR.utf8
    nb_NO.utf8
+   sl_SI.utf8
    sv_SE.utf8
    ```
 
@@ -113,7 +120,7 @@ Using pre-built packages is the preferred method for Debian and Ubuntu.
 3) Update configuration of "locale"
 
    ```sh
-   sudo perl -pi -e 's/^# (da_DK\.UTF-8.*|en_US\.UTF-8.*|es_ES\.UTF-8.*|fi_FI\.UTF-8.*|fr_FR\.UTF-8.*|nb_NO\.UTF-8.*|sv_SE\.UTF-8.*)/$1/' /etc/locale.gen
+   sudo perl -pi -e 's/^# (da_DK\.UTF-8.*|en_US\.UTF-8.*|es_ES\.UTF-8.*|fi_FI\.UTF-8.*|fr_FR\.UTF-8.*|nb_NO\.UTF-8.*|sl_SI\.UTF-8.*|sv_SE\.UTF-8.*)/$1/' /etc/locale.gen
    sudo locale-gen
    ```
 
@@ -125,6 +132,7 @@ Using pre-built packages is the preferred method for Debian and Ubuntu.
    fi_FI.utf8
    fr_FR.utf8
    nb_NO.utf8
+   sl_SI.utf8
    sv_SE.utf8
    ```
 

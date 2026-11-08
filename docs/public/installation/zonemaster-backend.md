@@ -24,7 +24,7 @@
   * [5.5 Post-installation (FreeBSD)](#55-post-installation-freebsd)
 * [6. Post-installation][Post-installation]
   * [6.1 Smoke test](#61-smoke-test)
-  * [6.2 Troubleshooting installation](#62-troubleshooting-installation)
+  * [6.2 Troubleshooting](#62-troubleshooting)
   * [6.3 What to do next?](#63-what-to-do-next)
 * [7. Installation with MariaDB](#7-installation-with-mariadb)
   * [7.1 MariaDB (Rocky Linux)][MariaDB instructions Rocky Linux]
@@ -53,6 +53,7 @@ Zonemaster::Backend instead, and want to keep the database, then see the
 [Upgrade document]. Otherwise [remove the database][Removing database] and
 continue with this installation document.
 
+An alternative to installing Zonemaster-Backend is to run it under [Docker]. See [Using the Backend] for run it under Docker.
 
 ## 2. Prerequisites
 
@@ -81,20 +82,25 @@ for Zonemaster::Backend, see the [declaration of prerequisites].
 
 Install dependencies available from binary packages:
 
+> Note: **For Rocky Linux 8 only**, install DBD::SQLite from CPAN as the one in the system packages repository is too old:
+> ```sh
+> sudo cpanm --notest DBD::SQLite
+> ```
+
 ```sh
-sudo dnf install --assumeyes jq perl-Class-Method-Modifiers perl-Config-IniFiles perl-DBD-SQLite perl-DBI perl-File-ShareDir perl-File-Slurp perl-HTML-Parser perl-JSON-PP perl-libwww-perl perl-Log-Dispatch perl-Mojolicious perl-Moose perl-Parallel-ForkManager perl-Plack perl-Plack-Middleware-ReverseProxy perl-Plack-Test perl-Role-Tiny perl-Test-Differences perl-Test-Exception perl-Test-Mojo perl-Test-NoWarnings perl-Try-Tiny perl-libintl perl-LWP-Protocol-https
+sudo dnf install --assumeyes jq perl-Capture-Tiny perl-Class-Method-Modifiers perl-Config-IniFiles perl-DBD-SQLite perl-DBI perl-File-ShareDir perl-File-Slurp perl-HTML-Parser perl-JSON-PP perl-libwww-perl perl-Log-Dispatch perl-Mojolicious perl-Moose perl-Net-Server perl-Parallel-ForkManager perl-Plack perl-Plack-Test perl-Role-Tiny perl-Test-Differences perl-Test-Exception perl-Test-Mojo perl-Test-NoWarnings perl-Try-Tiny perl-libintl perl-LWP-Protocol-https
 ```
 
 Install dependencies not available from binary packages:
 
-```sh
-sudo cpanm --notest Daemon::Control JSON::RPC JSON::Validator Log::Any Log::Any::Adapter::Dispatch Net::IP::XS Router::Simple Starman
-```
+> Note: **For Rocky Linux 10 only**, it is required to install a patch version of one of JSON::Validator
+> dependency (Net::IDN::Encode) so that it can build properly:
+> ```sh
+> sudo cpanm https://cpan.metacpan.org/authors/id/E/ET/ETHER/Net-IDN-Encode-2.501-TRIAL.tar.gz
+> ```
 
-For Rocky Linux 8 only, install DBD::SQLite from CPAN as the one in the system packages repository is too old:
-
 ```sh
-sudo cpanm --notest DBD::SQLite
+sudo cpanm --notest Daemon::Control JSON::RPC JSON::Validator Log::Any Log::Any::Adapter::Dispatch Net::IP::XS Plack::Middleware::ReverseProxy Router::Simple Starman
 ```
 
 Install Zonemaster::Backend:
@@ -103,13 +109,10 @@ Install Zonemaster::Backend:
 sudo cpanm --notest Zonemaster::Backend
 ```
 
-> The command above might try to install "DBD::Pg" and "DBD::mysql".
-> You can ignore if it fails. The relevant libraries are installed further down in these instructions.
-
 Add Zonemaster user (unless it already exists):
 
 ```sh
-sudo useradd -r -c "Zonemaster daemon user" zonemaster
+sudo useradd --system --home-dir=/nonexistent --shell=/usr/sbin/nologin --comment="Zonemaster daemon user" zonemaster
 ```
 
 Install files to their proper locations:
@@ -118,10 +121,9 @@ Install files to their proper locations:
 cd `perl -MFile::ShareDir=dist_dir -E 'say dist_dir("Zonemaster-Backend")'`
 sudo install -v -m 755 -d /etc/zonemaster
 sudo install -v -m 640 -g zonemaster ./backend_config.ini /etc/zonemaster/
-sudo install -v -m 775 -g zonemaster -d /var/log/zonemaster
 sudo install -v -m 644 ./tmpfiles.conf /usr/lib/tmpfiles.d/zonemaster.conf
-sudo install -v -m 644 ./zm-rpcapi.service /etc/systemd/system/
-sudo install -v -m 644 ./zm-testagent.service /etc/systemd/system/
+sudo install -v -m 644 -Z ./zm-rpcapi.service /etc/systemd/system/
+sudo install -v -m 644 -Z ./zm-testagent.service /etc/systemd/system/
 ```
 
 ### 3.2 Database engine installation (Rocky Linux)
@@ -158,7 +160,7 @@ See sections for [MariaDB][MariaDB instructions Rocky Linux] and
 Create the database tables:
 
 ```sh
-sudo -u zonemaster $(perl -MFile::ShareDir -le 'print File::ShareDir::dist_dir("Zonemaster-Backend")')/create_db.pl
+(cd / && sudo --user=zonemaster $(perl -MFile::ShareDir -le 'print File::ShareDir::dist_dir("Zonemaster-Backend")')/create_db.pl)
 ```
 
 
@@ -191,8 +193,8 @@ sudo systemctl restart zm-testagent
 To check if the daemons are running, do:
 
 ```sh
-sudo systemctl status zm-rpcapi
-sudo systemctl status zm-testagent
+sudo systemctl status --no-pager zm-rpcapi
+sudo systemctl status --no-pager zm-testagent
 ```
 
 See the [post-installation] section for post-installation matters.
@@ -208,7 +210,7 @@ See the [post-installation] section for post-installation matters.
 Install required locales:
 
 ```sh
-sudo perl -pi -e 's/^# (da_DK\.UTF-8.*|en_US\.UTF-8.*|es_ES\.UTF-8.*|fi_FI\.UTF-8.*|fr_FR\.UTF-8.*|nb_NO\.UTF-8.*|sv_SE\.UTF-8.*)/$1/' /etc/locale.gen
+sudo perl -pi -e 's/^# (da_DK\.UTF-8.*|en_US\.UTF-8.*|es_ES\.UTF-8.*|fi_FI\.UTF-8.*|fr_FR\.UTF-8.*|nb_NO\.UTF-8.*|sl_SI\.UTF-8.*|sv_SE\.UTF-8.*)/$1/' /etc/locale.gen
 sudo locale-gen
 ```
 
@@ -220,31 +222,23 @@ es_ES.utf8
 fi_FI.utf8
 fr_FR.utf8
 nb_NO.utf8
+sl_SI.utf8
 sv_SE.utf8
 ```
 
 Install dependencies available from binary packages:
 
 ```sh
-sudo apt install jq libclass-method-modifiers-perl libconfig-inifiles-perl libdbd-sqlite3-perl libdaemon-control-perl libdbi-perl libfile-sharedir-perl libfile-slurp-perl libhtml-parser-perl libmojolicious-perl libio-stringy-perl libjson-pp-perl libjson-rpc-perl libjson-validator-perl liblog-any-adapter-dispatch-perl liblog-any-perl liblog-dispatch-perl libmoose-perl libparallel-forkmanager-perl libplack-perl libplack-middleware-debug-perl libplack-middleware-reverseproxy-perl librole-tiny-perl librouter-simple-perl libtest-nowarnings-perl libtest-differences-perl libtest-exception-perl libtry-tiny-perl libintl-perl perl-doc starman
+sudo apt install jq libcapture-tiny-perl libclass-method-modifiers-perl libconfig-inifiles-perl libdbd-sqlite3-perl libdaemon-control-perl libdbi-perl libfile-sharedir-perl libfile-slurp-perl libhtml-parser-perl libmojolicious-perl libio-stringy-perl libjson-pp-perl libjson-rpc-perl libjson-validator-perl liblog-any-adapter-dispatch-perl liblog-any-perl liblog-dispatch-perl libmoose-perl libparallel-forkmanager-perl libplack-perl libplack-middleware-debug-perl libplack-middleware-reverseproxy-perl librole-tiny-perl librouter-simple-perl libtest-nowarnings-perl libtest-differences-perl libtest-exception-perl libtry-tiny-perl libintl-perl perl-doc starman
 ```
 > **Note**: libio-stringy-perl is listed here even though it's not a direct
 > dependency. It's an undeclared dependency of libconfig-inifiles-perl.
-
-For Ubuntu 20.04 only, install JSON::Validator from CPAN as the one in the system packages repository is too old:
-
-```sh
-sudo cpanm --notest JSON::Validator
-```
 
 Install Zonemaster::Backend:
 
 ```sh
 sudo cpanm --notest Zonemaster::Backend
 ```
-
-> The command above might try to install "DBD::Pg" and "DBD::mysql".
-> You can ignore if it fails. The relevant libraries are installed further down in these instructions.
 
 Add Zonemaster user (unless it already exists):
 
@@ -358,7 +352,7 @@ su -l
 Install dependencies available from binary packages:
 
 ```sh
-pkg install jq p5-Class-Method-Modifiers p5-Config-IniFiles p5-Daemon-Control p5-DBI p5-File-ShareDir p5-File-Slurp p5-HTML-Parser p5-JSON-PP p5-JSON-RPC p5-Mojolicious p5-Moose p5-Parallel-ForkManager p5-Plack p5-Plack-Middleware-ReverseProxy p5-Role-Tiny p5-Router-Simple p5-Starman p5-DBD-SQLite p5-Log-Dispatch p5-Log-Any p5-Log-Any-Adapter-Dispatch p5-JSON-Validator p5-YAML-LibYAML p5-Test-NoWarnings p5-Test-Differences p5-Test-Exception p5-Locale-libintl gmake
+pkg install jq p5-Capture-Tiny p5-Class-Method-Modifiers p5-Config-IniFiles p5-Daemon-Control p5-DBI p5-File-ShareDir p5-File-Slurp p5-HTML-Parser p5-JSON-PP p5-JSON-RPC p5-Mojolicious p5-Moose p5-Parallel-ForkManager p5-Plack p5-Plack-Middleware-ReverseProxy p5-Role-Tiny p5-Router-Simple p5-Starman p5-DBD-SQLite p5-Log-Dispatch p5-Log-Any p5-Log-Any-Adapter-Dispatch p5-JSON-Validator p5-YAML-LibYAML p5-Test-NoWarnings p5-Test-Differences p5-Test-Exception p5-Locale-libintl gmake
 ```
 <!-- JSON::Validator requires YAML::PP, but p5-JSON-Validator currently lacks a dependency on p5-YAML-LibYAML -->
 
@@ -368,11 +362,7 @@ Install Zonemaster::Backend:
 cpanm --notest Zonemaster::Backend
 ```
 
-> The command above might try to install "DBD::Pg" and "DBD::mysql".
-> You can ignore if it fails. The relevant libraries are installed further down in these instructions.
-
-Unless they already exist, add `zonemaster` user and `zonemaster` group
-(the group is created automatically):
+Unless they already exist, add `zonemaster` user and `zonemaster` group:
 
 ```sh
 cd `perl -MFile::ShareDir -le 'print File::ShareDir::dist_dir("Zonemaster-Backend")'`
@@ -478,11 +468,21 @@ The command is expected to immediately print out a testid,
 followed by a percentage ticking up from 0% to 100%.
 Once the number reaches 100% a JSON object is printed and zmtest terminates.
 
-### 6.2 Troubleshooting installation
+### 6.2 Troubleshooting
 
-If you have any issue with installation, and installed with `cpanm`, redo the
-installation above but without the `--notest` and with the `--verbose` option.
-Installation will take longer time.
+* If you have any issue while installing using `cpanm`, redo the installation
+  above but without the `--notest` and with the `--verbose` option. Installation
+  will take longer time.
+
+* If you have any issue with zm-rpcapi or zm-testagent not starting on Rocky
+  Linux, check the service status and logs.
+
+  ```sh
+  systemctl status zm-rpcapi
+  systemctl status zm-testagent
+  journalctl -xe -u zm-rpcapi
+  journalctl -xe -u zm-testagent
+  ```
 
 ### 6.3. What to do next?
 
@@ -586,7 +586,7 @@ sed -i '' '/[[:<:]]engine[[:>:]]/ s/=.*/= MySQL/' /usr/local/etc/zonemaster/back
 Install, configure and start database engine (and Perl bindings):
 
 ```sh
-pkg install mysql80-server p5-DBD-mysql
+pkg install mysql84-server p5-DBD-mysql
 ```
 
 ```sh
@@ -594,7 +594,7 @@ sysrc mysql_enable="YES"
 service mysql-server start
 ```
 
-By default the MySQL root password is empty. Just press ENTER if prompted for 
+By default the MySQL root password is empty. Just press ENTER if prompted for
 password. The advice is to set a password.
 
 To create the database and the database user (unless you keep an old database).
@@ -642,8 +642,8 @@ password. To be safe run the commands one by one.
 
 ```sh
 sudo systemctl start postgresql
-sudo -u postgres psql -c "CREATE USER zonemaster WITH PASSWORD 'zonemaster';"
-sudo -u postgres psql -c "CREATE DATABASE zonemaster WITH OWNER 'zonemaster' ENCODING 'UTF8';"
+sudo --login --user=postgres psql -c "CREATE USER zonemaster WITH PASSWORD 'zonemaster';"
+sudo --login --user=postgres psql -c "CREATE DATABASE zonemaster WITH OWNER 'zonemaster' ENCODING 'UTF8';"
 ```
 
 > **Note:** You may get error messages from these commands about lack of
@@ -714,7 +714,7 @@ of `postgresql-client`. Determine what version was installed:
 pkg info | grep postgresql | grep client
 ```
 Replace `XX` in the command below to install `postgresql-server` with the same
-major version as the installed `postgresql-client`, e.g. `16`.
+major version as the installed `postgresql-client`, e.g. `17`.
 
 ```sh
 pkg install postgresqlXX-server
@@ -809,7 +809,7 @@ sudo cpanm --notest Net::Statsd
 sudo apt install libnet-statsd-perl
 ```
 
-### 10.1.3 Installation on Freebsd
+### 10.1.3 Installation on FreeBSD
 
 ```sh
 cpanm --notest Net::Statsd
@@ -846,3 +846,5 @@ performance. See [Global cache in Zonemaster-Engine].
 [Zonemaster::Engine]:                           https://github.com/zonemaster/zonemaster-engine/blob/master/README.md
 [Zonemaster::GUI installation]:                 zonemaster-gui.md
 [Zonemaster::LDNS]:                             https://github.com/zonemaster/zonemaster-ldns/blob/master/README.md
+[Docker]:                                       https://en.wikipedia.org/wiki/Docker_(software)
+[Using the Backend]:                            ../using/backend/README.md

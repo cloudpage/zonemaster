@@ -16,10 +16,6 @@ Zonemaster consists of several modules or components. The components will help
 different types of users to check domain servers for configuration errors and
 generate a report that will assist in fixing the errors.
 
-Zonemaster consists of several modules or components. The components will help
-different types of users to check domain servers for configuration errors and
-generate a report that will assist in fixing the errors.
-
 Zonemaster is developed by [Afnic] and [The Swedish Internet Foundation].
 
 A public instance is running on [zonemaster.net].
@@ -49,5 +45,5 @@ The public documentation is divided into the following main categories:
 [The Swedish Internet Foundation]:                  https://internetstiftelsen.se/en/
 [Zonemaster.net]:                                   https://zonemaster.net
 
-<!-- Location on doc.zonemaster.net: --> 
-[Zonemaster-logo]:                                  ../zonemaster_logo_2021_color.png)
+<!-- Location on doc.zonemaster.net: -->
+[Zonemaster-logo]:                                  ../zonemaster_logo_2021_color.png
